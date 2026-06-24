@@ -248,6 +248,7 @@ async function runSummary() {
     content.innerHTML = `<p style="color:#EF4444;font-size:13px;">Error: ${escHtml(e.message)}</p>`;
     showToast(e.message, 'error');
   }
+  summaryContent.classList.remove("empty-state");
   btn.disabled = false;
   btn.innerHTML = '<i data-lucide="sparkles" style="width:14px;height:14px;"></i> Regenerate';
   lucide.createIcons();
@@ -282,6 +283,7 @@ async function runInsights() {
     grid.innerHTML = `<p style="color:#EF4444;grid-column:1/-1;font-size:13px;">Error: ${escHtml(e.message)}</p>`;
     showToast(e.message, 'error');
   }
+  insightsGrid.classList.remove("empty-state");
   btn.disabled = false;
   btn.innerHTML = '<i data-lucide="zap" style="width:14px;height:14px;"></i> Regenerate';
   lucide.createIcons();
