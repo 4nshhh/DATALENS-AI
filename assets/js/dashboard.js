@@ -82,7 +82,18 @@ function initApiKey() {
   // Save on Enter
   input?.addEventListener('keydown', (e) => { if (e.key === 'Enter') saveBtn?.click(); });
 }
+function showApiSection() {
+  const apiSection = document.getElementById("apiKeySection");
 
+  if (apiSection.style.display === "none") {
+    apiSection.style.display = "block";
+
+    window.scrollTo({
+      top: 0,
+      behavior: "smooth"
+    });
+  }
+}
 /* ====================================================
    SAMPLE BUTTONS
    ==================================================== */
@@ -101,9 +112,17 @@ function initSampleButtons() {
    NAV ACTIONS
    ==================================================== */
 function initNavActions() {
-  document.getElementById('btnReset')?.addEventListener('click', resetDashboard);
+  document.getElementById('btnReset')?.addEventListener('click', () => {
+
+    document.getElementById('apiKeySection').style.display = 'none';
+
+    resetDashboard();
+  });
+
   document.getElementById('btnExportNav')?.addEventListener('click', () => {
-    document.getElementById('sectionExport')?.scrollIntoView({ behavior: 'smooth' });
+    document.getElementById('sectionExport')?.scrollIntoView({
+      behavior: 'smooth'
+    });
   });
 }
 
@@ -225,6 +244,16 @@ function renderStatsTable() {
    AI SUMMARY
    ==================================================== */
 async function runSummary() {
+  showApiSection();
+
+  const apiKey =
+    localStorage.getItem("groq_api_key") ||
+    document.getElementById("apiKeyInput")?.value?.trim();
+
+  if (!apiKey) {
+    showToast("Please add your Groq API key first", "error");
+    return;
+  }
   const btn = document.getElementById('btnGenerateSummary');
   const content = document.getElementById('summaryContent');
   btn.disabled = true;
@@ -258,6 +287,16 @@ async function runSummary() {
    AI INSIGHTS
    ==================================================== */
 async function runInsights() {
+  showApiSection();
+
+  const apiKey =
+    localStorage.getItem("groq_api_key") ||
+    document.getElementById("apiKeyInput")?.value?.trim();
+
+  if (!apiKey) {
+    showToast("Please add your Groq API key first", "error");
+    return;
+  }
   const btn  = document.getElementById('btnGenerateInsights');
   const grid = document.getElementById('insightsGrid');
   btn.disabled = true;

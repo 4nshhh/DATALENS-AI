@@ -125,6 +125,7 @@
   inset: 0;
   opacity: 0;
   cursor: pointer;
+  display:none;
 }
 
 .upload-zone__sample {
@@ -1245,5 +1246,106 @@
   .dash-header__title{
     justify-content:center;
     font-size:0.85rem;
+  }
+}
+
+@media (max-width: 480px){
+
+  #btnExportNav{
+    display:none !important;
+  }
+
+  #btnReset{
+    width:42px;
+    height:42px;
+    padding:0;
+    font-size:0;
+  }
+
+  #btnReset i{
+    margin:0;
+  }
+}
+/* ============================================
+   MOBILE NAVBAR - HOME ONLY
+   ============================================ */
+@media (max-width: 480px) {
+
+  /* Hide Reset */
+  #btnReset {
+    display: none !important;
+  }
+
+  /* Hide Export */
+  #btnExportNav {
+    display: none !important;
+  }
+
+  /* Keep Home aligned right */
+  .dash-header__actions {
+    display: flex !important;
+    justify-content: flex-end;
+    width: 100%;
+  }
+
+  /* Home button sizing */
+  .dash-header__actions a.btn {
+    width: auto;
+    min-width: 110px;
+  }
+
+  /* Logo left, Home right */
+  .dash-header__inner {
+    flex-direction: row !important;
+    align-items: center;
+    justify-content: space-between;
+    gap: 0.75rem;
+  }
+
+  .dash-header__title {
+    width: auto;
+    justify-content: flex-start;
+    flex: 1;
+  }
+}
+
+.viz-tabs-scroll {
+  overflow-x: auto;
+  overflow-y: hidden;
+  scrollbar-width: none;
+  -ms-overflow-style: none;
+}
+
+.viz-tabs-scroll::-webkit-scrollbar {
+  display: none;
+}
+
+.viz-tabs {
+  display: flex;
+  gap: 8px;
+  min-width: max-content;
+  padding-bottom: 4px;
+}
+
+@media (max-width:768px){
+
+  .viz-tabs-scroll{
+    width:100%;
+    overflow-x:auto;
+    -webkit-overflow-scrolling:touch;
+  }
+
+  .viz-tabs{
+    display:flex;
+    gap:6px;
+    width:max-content;
+  }
+
+  .viz-tab{
+    flex:none;
+    width:auto !important;
+    min-width:90px;
+    padding:8px 14px;
+    white-space:nowrap;
   }
 }

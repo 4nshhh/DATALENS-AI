@@ -44,9 +44,15 @@ export function initUpload({ onFile, onError }) {
 
   /* ---- Click on zone (but not on buttons) ---- */
   zone.addEventListener('click', (e) => {
-    if (e.target.closest('button')) return;
-    input.click();
-  });
+
+  if (e.target.closest('button')) return;
+
+  if (e.target === input) return;
+
+  e.stopPropagation();
+
+  input.click();
+});
 }
 
 async function handleFile(file, onFile, onError) {

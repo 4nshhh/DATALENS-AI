@@ -85,6 +85,7 @@
       <!-- ---- API Key bar ---- -->
       <div
         style="
+          display: none;
           border-bottom: var(--border-normal);
           background: rgba(255, 255, 255, 0.8);
           backdrop-filter: blur(6px);
@@ -139,13 +140,13 @@
                 never leaves your browser.
               </p>
             </div>
-
+            <input
+              type="file"
+              id="fileInput"
+              accept=".csv,.xlsx,.xls,.json"
+              style="display: none"
+            />
             <div class="upload-zone" id="uploadZone">
-              <input
-                type="file"
-                id="fileInput"
-                accept=".csv,.xlsx,.xls,.json"
-              />
               <div class="upload-zone__icon">
                 <i data-lucide="upload-cloud"></i>
               </div>
@@ -366,6 +367,8 @@
                 Visualizations
               </h3>
               <!-- Viz type tabs -->
+               <div class="viz-tabs-scroll">
+                <div class="viz-tabs">
               <div style="display: flex; gap: 6px">
                 <button
                   class="btn btn-secondary btn-sm viz-tab active"
@@ -385,6 +388,8 @@
                 <button class="btn btn-ghost btn-sm viz-tab" data-viz="heatmap">
                   Heatmap
                 </button>
+              </div>
+              </div>
               </div>
             </div>
             <div class="dash-card__body">
