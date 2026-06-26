@@ -336,41 +336,6 @@
   margin: 0;
 }
 
-/* ============ TOAST (notifications) ============ */
-.toast-container {
-  position: fixed;
-  bottom: var(--space-6);
-  right: var(--space-6);
-  display: flex;
-  flex-direction: column;
-  gap: var(--space-3);
-  z-index: 9999;
-}
-
-.toast {
-  background: var(--color-white);
-  border: var(--border-normal);
-  border-radius: var(--border-radius);
-  box-shadow: var(--shadow-md);
-  padding: var(--space-4) var(--space-5);
-  font-size: var(--text-sm);
-  font-weight: 500;
-  display: flex;
-  align-items: center;
-  gap: var(--space-3);
-  animation: slideInToast 0.3s ease;
-  max-width: 340px;
-}
-
-.toast.success { border-left: 4px solid #10B981; }
-.toast.error   { border-left: 4px solid #EF4444; }
-.toast.info    { border-left: 4px solid var(--color-accent-dark); }
-
-@keyframes slideInToast {
-  from { opacity: 0; transform: translateX(30px); }
-  to   { opacity: 1; transform: translateX(0); }
-}
-
 /* ============ RESPONSIVE NAVBAR ============ */
 @media (max-width: 768px) {
   .navbar__links { display: none; }

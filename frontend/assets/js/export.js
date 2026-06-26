@@ -1,7 +1,7 @@
 /* ============================================
    EXPORT.JS — PDF, JSON, CSV, Markdown exports
    ============================================ */
-import { showToast } from './main.js';
+import { Notification } from './notifications.js';
 
 /* ---- Export as JSON ---- */
 export function exportJSON(stats, insights, mlResult, filename) {
@@ -16,7 +16,7 @@ export function exportJSON(stats, insights, mlResult, filename) {
     `datalens_${stripExt(filename)}_analysis.json`,
     'application/json'
   );
-  showToast('JSON exported successfully', 'success');
+  Notification.show({ type: 'success', title: 'JSON exported', description: `datalens_${stripExt(filename)}_analysis.json`, autoDismiss: 3000 });
 }
 
 /* ---- Export stats as CSV ---- */
@@ -29,7 +29,7 @@ export function exportStatsCSV(stats, filename) {
   );
   const csv = [headers.join(','), ...rows].join('\n');
   downloadBlob(csv, `datalens_${stripExt(filename)}_stats.csv`, 'text/csv');
-  showToast('Stats CSV exported', 'success');
+  Notification.show({ type: 'success', title: 'CSV exported', description: `datalens_${stripExt(filename)}_stats.csv`, autoDismiss: 3000 });
 }
 
 /* ---- Export insights as Markdown ---- */
@@ -44,12 +44,12 @@ export function exportMarkdown(summary, insights, mlResult, filename) {
 
   const md = `# DataLens AI — Analysis Report\n**File:** ${filename}  \n**Exported:** ${new Date().toLocaleString()}\n\n---\n\n## Executive Summary\n\n${summary || '_Not generated._'}\n\n---\n\n## AI Insights\n\n${insightsMD || '_Not generated._'}\n\n---\n\n${mlMD}`;
   downloadBlob(md, `datalens_${stripExt(filename)}_report.md`, 'text/markdown');
-  showToast('Markdown exported', 'success');
+  Notification.show({ type: 'success', title: 'Markdown exported', description: `datalens_${stripExt(filename)}_report.md`, autoDismiss: 3000 });
 }
 
 /* ---- Export full PDF ---- */
 export async function exportPDF(filename, summary, stats, insights, mlResult) {
-  showToast('Generating PDF…', 'info');
+  Notification.show({ type: 'loading', title: 'Generating PDF', description: filename, subtitle: 'Building report…' });
 
   try {
     const { jsPDF } = window.jspdf;
@@ -172,10 +172,10 @@ export async function exportPDF(filename, summary, stats, insights, mlResult) {
     }
 
     doc.save(`datalens_${stripExt(filename)}_report.pdf`);
-    showToast('PDF downloaded!', 'success');
+    Notification.update({ type: 'success', title: 'PDF downloaded', description: `datalens_${stripExt(filename)}_report.pdf`, autoDismiss: 3500 });
   } catch (err) {
     console.error(err);
-    showToast('PDF generation failed: ' + err.message, 'error');
+    Notification.update({ type: 'error', title: 'PDF generation failed', description: err.message, autoDismiss: 6000 });
   }
 }
 

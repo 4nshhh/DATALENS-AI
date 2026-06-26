@@ -1,5 +1,5 @@
 /* ============================================
-   MAIN.JS — Shared: navbar, scroll-reveal, toasts
+   MAIN.JS — Shared: navbar, scroll-reveal
    ============================================ */
 
 /* ---- Navbar scroll shadow ---- */
@@ -11,8 +11,8 @@ if (navbar) {
 }
 
 /* ---- Mobile hamburger ---- */
-const hamburger  = document.getElementById('hamburger');
-const mobileNav  = document.getElementById('mobileNav');
+const hamburger = document.getElementById('hamburger');
+const mobileNav = document.getElementById('mobileNav');
 
 if (hamburger && mobileNav) {
   hamburger.addEventListener('click', () => {
@@ -20,7 +20,6 @@ if (hamburger && mobileNav) {
     hamburger.setAttribute('aria-expanded', open);
   });
 
-  // Close when a link inside is clicked
   mobileNav.querySelectorAll('a').forEach(link => {
     link.addEventListener('click', () => mobileNav.classList.remove('open'));
   });
@@ -51,42 +50,10 @@ const revealObserver = new IntersectionObserver(
   { threshold: 0.12, rootMargin: '0px 0px -40px 0px' }
 );
 
-function initScrollReveal() {
+export function initScrollReveal() {
   document.querySelectorAll('.fade-up, .fade-in, .scale-in').forEach(el => {
     revealObserver.observe(el);
   });
 }
 
-// Run on DOM ready and also export for dashboard to call after dynamic content
 document.addEventListener('DOMContentLoaded', initScrollReveal);
-export { initScrollReveal };
-
-/* ============================================
-   TOAST NOTIFICATION SYSTEM
-   ============================================ */
-const toastContainer = document.getElementById('toastContainer');
-
-/**
- * showToast(message, type='info', duration=3500)
- * types: 'info' | 'success' | 'error'
- */
-export function showToast(message, type = 'info', duration = 3500) {
-  if (!toastContainer) return;
-
-  const icons = { success: '✓', error: '✕', info: 'ℹ' };
-
-  const toast = document.createElement('div');
-  toast.className = `toast ${type}`;
-  toast.innerHTML = `<span style="font-size:16px;line-height:1;">${icons[type]}</span><span>${message}</span>`;
-  toast.style.animation = 'slideInToast 0.3s ease';
-
-  toastContainer.appendChild(toast);
-
-  setTimeout(() => {
-    toast.style.animation = 'slideOutRight 0.3s ease forwards';
-    toast.addEventListener('animationend', () => toast.remove());
-  }, duration);
-}
-
-// Make globally available for non-module scripts
-window.showToast = showToast;

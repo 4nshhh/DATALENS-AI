@@ -8,7 +8,8 @@ import { generateSummary, generateInsights, askDataset } from './groq.js';
 import { renderHistogram, renderCategoryChart, renderScatter, renderHeatmap } from './charts.js';
 import { suggestML }                             from './mlSuggestions.js';
 import { exportPDF, exportJSON, exportStatsCSV, exportMarkdown } from './export.js';
-import { showToast, initScrollReveal }           from './main.js';
+import { initScrollReveal }                      from './main.js';
+import { Notification }                          from './notifications.js';
 
 /* ---- State ---- */
 let state = {
@@ -43,7 +44,7 @@ document.addEventListener('DOMContentLoaded', async () => {
     try {
       const result = loadSample(sample);
       await handleDataLoaded(result);
-    } catch (e) { showToast(e.message, 'error'); }
+    } catch (e) { Notification.show({ type: 'error', title: 'Sample load failed', description: e.message, autoDismiss: 5000 }); }
   }
 });
 
@@ -65,18 +66,18 @@ function initApiKey() {
 
   saveBtn?.addEventListener('click', () => {
     const val = input.value.trim();
-    if (!val) { showToast('Enter a key first', 'error'); return; }
+    if (!val) { Notification.show({ type: 'error', title: 'No API key', description: 'Enter a key first', autoDismiss: 4000 }); return; }
     localStorage.setItem('groqApiKey', val);
     keyStatus.textContent = '✓ Key saved';
     keyStatus.style.color = '#10B981';
-    showToast('API key saved', 'success');
+    Notification.show({ type: 'success', title: 'API key saved', description: 'Groq key stored locally', autoDismiss: 3000 });
   });
 
   clearBtn?.addEventListener('click', () => {
     localStorage.removeItem('groqApiKey');
     input.value = '';
     keyStatus.textContent = '';
-    showToast('API key cleared', 'info');
+    Notification.show({ type: 'info', title: 'API key cleared', description: 'Key removed from local storage', autoDismiss: 3000 });
   });
 
   // Save on Enter
@@ -103,7 +104,7 @@ function initSampleButtons() {
       try {
         const result = loadSample(btn.dataset.sample);
         handleDataLoaded(result);
-      } catch (e) { showToast(e.message, 'error'); }
+      } catch (e) { Notification.show({ type: 'error', title: 'Sample load failed', description: e.message, autoDismiss: 5000 }); }
     });
   });
 }
@@ -135,7 +136,7 @@ function resetDashboard() {
   document.getElementById('btnReset').style.display = 'none';
   document.getElementById('btnExportNav').style.display = 'none';
   document.getElementById('fileNameBadge').style.display = 'none';
-  showToast('Cleared. Upload a new file.', 'info');
+  Notification.show({ type: 'info', title: 'Dashboard reset', description: 'Upload a new file to begin', autoDismiss: 3000 });
 }
 
 /* ====================================================
@@ -197,13 +198,11 @@ function renderOverview() {
 
   const container = document.getElementById('overviewCards');
   container.innerHTML = cards.map(c => `
-  <div class="overview-stat">
-    <div class="overview-stat__icon"><i data-lucide="${c.icon}"></i></div>
-    <div class="overview-stat__info">
+    <div class="overview-stat">
+      <div class="overview-stat__icon"><i data-lucide="${c.icon}"></i></div>
       <div class="overview-stat__value">${c.value}</div>
       <div class="overview-stat__label">${c.label}</div>
-    </div>
-  </div>`).join('');
+    </div>`).join('');
 
   // Quality bar
   document.getElementById('qualityScore').textContent = `${qs}%`;
@@ -253,7 +252,7 @@ async function runSummary() {
     document.getElementById("apiKeyInput")?.value?.trim();
 
   if (!apiKey) {
-    showToast("Please add your Groq API key first", "error");
+    Notification.show({ type: 'error', title: 'API key required', description: 'Add your Groq API key first', autoDismiss: 5000 });
     return;
   }
   const btn = document.getElementById('btnGenerateSummary');
@@ -274,10 +273,10 @@ async function runSummary() {
     });
     state.summary = full;
     content.innerHTML = `<p class="ai-summary-text">${escHtml(full)}</p>`;
-    showToast('Summary ready', 'success');
+    Notification.show({ type: 'success', title: 'Summary ready', description: 'AI summary generated', autoDismiss: 3000 });
   } catch (e) {
     content.innerHTML = `<p style="color:#EF4444;font-size:13px;">Error: ${escHtml(e.message)}</p>`;
-    showToast(e.message, 'error');
+    Notification.show({ type: 'error', title: 'Summary failed', description: e.message, autoDismiss: 5000 });
   }
   summaryContent.classList.remove("empty-state");
   btn.disabled = false;
@@ -296,7 +295,7 @@ async function runInsights() {
     document.getElementById("apiKeyInput")?.value?.trim();
 
   if (!apiKey) {
-    showToast("Please add your Groq API key first", "error");
+    Notification.show({ type: 'error', title: 'API key required', description: 'Add your Groq API key first', autoDismiss: 5000 });
     return;
   }
   const btn  = document.getElementById('btnGenerateInsights');
@@ -319,10 +318,10 @@ async function runInsights() {
         <h4 class="insight-card__title">${escHtml(ins.title)}</h4>
         <p class="insight-card__body">${escHtml(ins.body)}</p>
       </div>`).join('');
-    showToast('Insights ready', 'success');
+    Notification.show({ type: 'success', title: 'Insights ready', description: `${insights.length} insight${insights.length !== 1 ? 's' : ''} generated`, autoDismiss: 3000 });
   } catch (e) {
     grid.innerHTML = `<p style="color:#EF4444;grid-column:1/-1;font-size:13px;">Error: ${escHtml(e.message)}</p>`;
-    showToast(e.message, 'error');
+    Notification.show({ type: 'error', title: 'Insights failed', description: e.message, autoDismiss: 5000 });
   }
   insightsGrid.classList.remove("empty-state");
   btn.disabled = false;
@@ -433,28 +432,28 @@ function renderMLRecommendations() {
 
   const meta = document.getElementById('mlMeta');
   meta.innerHTML = `
-  <div class="ml-meta-item">
-    <div class="ml-meta-item__label">Task Type</div>
-    <div class="ml-meta-item__value">${formatTaskType(mlResult.taskType)}</div>
-  </div>
-  <div class="ml-meta-item">
-    <div class="ml-meta-item__label">Target Column</div>
-    <div class="ml-meta-item__value">${mlResult.targetColumn}</div>
-  </div>
-  <div class="ml-meta-item">
-    <div class="ml-meta-item__label">ML Readiness</div>
-    <div class="ml-meta-item__value">${mlResult.readiness}%</div>
-  </div>
-  <div class="ml-meta-item">
-    <div class="ml-meta-item__label">Confidence</div>
-    <div class="ml-meta-item__value">${mlResult.confidence}%</div>
-  </div>`;
+    <div class="overview-stat" style="flex:none;">
+      <div class="overview-stat__value" style="font-size:1.1rem;">${formatTaskType(mlResult.taskType)}</div>
+      <div class="overview-stat__label">Task Type</div>
+    </div>
+    <div class="overview-stat" style="flex:none;">
+      <div class="overview-stat__value" style="font-size:1.1rem;">${mlResult.targetColumn}</div>
+      <div class="overview-stat__label">Target Column</div>
+    </div>
+    <div class="overview-stat" style="flex:none;">
+      <div class="overview-stat__value" style="font-size:1.1rem;">${mlResult.readiness}%</div>
+      <div class="overview-stat__label">ML Readiness</div>
+    </div>
+    <div class="overview-stat" style="flex:none;">
+      <div class="overview-stat__value" style="font-size:1.1rem;">${mlResult.confidence}%</div>
+      <div class="overview-stat__label">Confidence</div>
+    </div>`;
 
   const grid = document.getElementById('mlGrid');
   grid.innerHTML = mlResult.models.map(m => `
     <div class="ml-model-card">
       <div class="ml-model-card__name">${m.name}</div>
-      <div class="ml-model-card__desc">${m.note}</div>
+      <div class="ml-model-card__type">${m.note}</div>
       <div class="ml-score-bar">
         <div class="ml-score-fill" style="width:${m.score}%"></div>
       </div>

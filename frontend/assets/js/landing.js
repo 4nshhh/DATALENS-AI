@@ -1,7 +1,6 @@
 /* ============================================
    LANDING.JS — Hero sparkles, landing interactions
    ============================================ */
-import { showToast } from './main.js';
 
 document.addEventListener('DOMContentLoaded', () => {
 
